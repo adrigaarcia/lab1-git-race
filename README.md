@@ -4,7 +4,6 @@ Please, go to the [Wiki](https://github.com/UNIZAR-30246-WebEngineering/lab1-git
 
 Some ideas for obtaining a :gift: if you are the first that:
 
-- **Moby Dick III**: Use Kubernetes (minikube) to run the app
 - **Home improvement**: Use a markup template language different from Thymeleaf (server side)
 - **Home improvement II**: Use an endpoint that returns the message and update the HTML in client side (no MVC server side)
 - **Home improvement III**: Use moder JS framework (React) and a Restful web service (no MVC server side)
@@ -23,4 +22,4 @@ User name | NIA | CI |Score
 [Tomás Pelayo Benedet](https://github.com/Tomenos18/lab1-git-race) |779691 | [![Build Status](https://github.com/Tomenos18/lab1-git-race/actions/workflows/ci.yml/badge.svg)](https://github.com/Tomenos18/lab1-git-race/actions/workflows/ci.yml) | **Moby Dick** :gift:
 [Íñigo Aréjula](https://github.com/arejula27/lab1-git-race) | 785370 | [![Build Status](https://github.com/Tomenos18/lab1-git-race/actions/workflows/ci.yml/badge.svg)](https://github.com/arejula27/lab1-git-race/actions/workflows/ci.yml)
 [Óscar Pueyo Ciutad](https://github.com/iksopo) | 780378 | [![Build Status](https://github.com/iksopo/lab1-git-race/actions/workflows/ci.yml/badge.svg)](https://github.com/iksopo/lab1-git-race/actions/workflows/ci.yml) | **Moby Dick II** :gift:
-Adrian Garcia | 722292 | [![Build Status](https://github.com/adrigaarcia/lab1-git-race/actions/workflows/ci.yml/badge.svg)](https://github.com/adrigaarcia/lab1-git-race/actions/workflows/ci.yml)
+[Adrian Garcia](https://github.com/adrigaarcia/lab1-git-race) | 722292 | [![Build Status](https://github.com/adrigaarcia/lab1-git-race/actions/workflows/ci.yml/badge.svg)](https://github.com/adrigaarcia/lab1-git-race/actions/workflows/ci.yml) | **Moby Dick III** :gift:
