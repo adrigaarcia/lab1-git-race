@@ -22,7 +22,7 @@ For checking if it works you can find the next page on <http://localhost:8080>:
 for testing all the unitary test run the command:
 
 ```bash
-gradelw check
+gradlew check
 ```
 
 ## Controller
@@ -116,29 +116,134 @@ The file `src/test/kotlin/IntegrationTest.kt` contains two tests that checks the
 
 This ensures the webpage has a valid CSS file.
 
-## Deployment 
-### Using docker-compose
+## Deployment
+
+### With a Dockerfile
+
+It's very simple, just follow the following steps:
+
+1. Run following commands. This if going to create the image that we need:
+
+   ```bash
+   docker pull gradle:openj9
+   docker build -t lab1-git-race .
+   ```
+
+1. If all went correctly, a image has been created (Image ID and Size may be different):
+
+    ```bash
+    $ docker images
+    REPOSITORY      TAG       IMAGE ID       CREATED          SIZE
+    lab1-git-race   latest    6de6b5e29bda   1 minutes ago   709MB
+    ```
+
+1. Finally, the following command run the container and is going to link the port 8080 of the container with the port 8080 of the host. This can be changed for example `5000:8080` to link the port 8080 of the container with the port 5000 of the host.
+
+    ```bash
+    docker run -p 8080:8080 lab1-git-race
+    ```
+
+#### Alternative approach
+
+For runnicng the app inside a container run the next command:
+
+```bash
+docker run --expose=8080 --network="host" --rm -u gradle -v "$PWD":/home/gradle/project -w /home/gradle/project gradle gradle bootRun
+```
+
+If you get permision denied try to use root privileges or adding you user to the docker group for using it without sudo.
+
+```bash
+sudo usermod -aG docker $USER`
+```
+
+### With a docker-compose
+
 In order to run the app, you will need the following tools:
+
 - [docker](https://docs.docker.com/engine/install/)
 - [docker-compose](https://docs.docker.com/compose/install)
 
 Run the following command to build the images if needed and run the app:
+
+```bash
+docker-compose up
 ```
-$ docker-compose up
-```
+
 It might show the following error:
-```
+
+```text
 ERROR: Couldn't connect to Docker daemon at [...]
 ```
+
 Try running with sudo:
-```
-$ sudo docker-compose up
+
+```bash
+sudo docker-compose up
 ```
 
 Now you can access [the website](http://localhost:8080/) to check if everything works correctly.
 
 **Note:** By default, local port 8080 is used to deploy the app, however, it can be modified in ``docker-compose.yml``, setting ``8080:8080`` to ``<your-port>:8080``.
-### With Heroku
+
+## With Kuvernetes
+
+Using Tomas' [Dockerfile](https://github.com/Tomenos18/lab1-git-race/blob/master/Dockerfile) and [Guide for the basic Docker Deployment](https://github.com/Tomenos18/lab1-git-race/blob/master/README.md)
+
+Requirements:
+
+- Minikube single node cluster
+- Kubectl
+- Docker
+- Helm
+
+Steps to reproduce (adapted from [this tutorial](https://dev.to/gateixeira/deploying-a-spring-boot-kotlin-app-on-kubernetes-with-docker-and-helm-589p)):
+
+1. Create the following files:
+  
+   - `Dockerfile` in root dir
+   - `/charts/values.yaml`
+   - `/charts/Chart.yaml`
+   - `/charts/templates/deployment.yaml`
+   - `/charts/templates/service.yaml`
+  
+  The only difference with the original tutorial is in `values.yaml` file, where `appName` is now `demo-minikube`, and `image/registry` is now your DockerID.
+
+1. Switch Docker environment (from `Dockerfile` directory):
+  
+   - MacOS / Linux:
+
+     ```bash
+     eval $(minikube docker-env)
+     ```
+
+   - Windows:
+
+     ```cmd
+     minikube docker-env | Invoke-Expression
+     ```
+
+1. Build image:
+
+   ```bash
+   docker build -t <DockerID>/demo-minikube:latest .
+   ```
+
+1. Install App inside Minikube:
+
+   ```bash
+   helm upgrade --install demo-minikube charts --values charts/values.yaml
+   ```
+
+1. Tunnel app to publicly accesible url:
+
+   ```bash
+   minikube service demo-minikube --url
+   ```
+
+From here, a URL specifying the localhost should appear.
+
+### On Heroku
 
 > In order to deploy the app, you will need `git` and `heroku` CLI installed in your machine.
 
@@ -170,98 +275,3 @@ git push heroku master
 ```
 
 Do not be afraid of detaching the `push` command, it won't cancel the build and the app will be deployed anyways.
-
-## How to deploy with Dockerfile
-
-It's very simple, just follow the following steps:
-
-1. Run following commands. This if going to create the image that we need:
-
-   ```bash
-   docker pull gradle:openj9
-   docker build -t lab1-git-race .
-   ```
-
-1. If all went correctly, a image has been created (Image ID and Size may be different):
-
-    ```bash
-    $ docker images
-    REPOSITORY      TAG       IMAGE ID       CREATED          SIZE
-    lab1-git-race   latest    6de6b5e29bda   1 minutes ago   709MB
-    ```
-
-1. Finally, the following command run the container and is going to link the port 8080 of the container with the port 8080 of the host. This can be changed for example `5000:8080` to link the port 8080 of the container with the port 5000 of the host.
-
-    ```bash
-    docker run -p 8080:8080 lab1-git-race
-    ```
-
-## Alternative approach
-
-For runnicng the app inside a container run the next command:
-
-```bash
-docker run --expose=8080 --network="host" --rm -u gradle -v "$PWD":/home/gradle/project -w /home/gradle/project gradle gradle bootRun
-```
-
-If you get permision denied try to use root privileges or adding you user to the docker group for using it without sudo.
-
-```bash
-sudo usermod -aG docker $USER`
-```
-
-# Guide for deploying the Hello World Kotlin app
-
-Using Tomas' [Dockerfile](https://github.com/Tomenos18/lab1-git-race/blob/master/Dockerfile) and [Guide for the basic Docker Deployment](https://github.com/Tomenos18/lab1-git-race/blob/master/README.md)
-
-Requirements:
-
-* Minikube single node cluster
-* Kubectl
-* Docker
-* Helm
-
-Steps to reproduce (adapted from [this tutorial](https://dev.to/gateixeira/deploying-a-spring-boot-kotlin-app-on-kubernetes-with-docker-and-helm-589p)):
-
-* Create the following files:
-  
-  * `Dockerfile` in root dir
-  * `/charts/values.yaml`
-  * `/charts/Chart.yaml`
-  * `/charts/templates/deployment.yaml`
-  * `/charts/templates/service.yaml`
-  
-  The only difference with the original tutorial is in `values.yaml` file, where `appName` is now `demo-minikube`, and `image/registry` is now your DockerID.
-
-* Switch Docker environment (from `Dockerfile` directory):
-  * MacOS / Linux:
-
-    ```bash
-     eval $(minikube docker-env)
-    ```
-
-  * Windows:
-
-    ```cmd
-    minikube docker-env | Invoke-Expression
-    ```
-
-* Build image:
-
-  ```bash
-  docker build -t <DockerID>/demo-minikube:latest .
-  ```
-
-* Install App inside Minikube:
-
-  ```bash
-  helm upgrade --install demo-minikube charts --values charts/values.yaml
-  ```
-
-* Tunnel app to publicly accesible url:
-
-  ```bash
-  minikube service demo-minikube --url
-  ```
-
-From here, a URL specifying the localhost should appear.
